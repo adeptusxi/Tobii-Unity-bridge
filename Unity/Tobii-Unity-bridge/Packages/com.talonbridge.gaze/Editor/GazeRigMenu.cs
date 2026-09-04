@@ -14,9 +14,7 @@ namespace TalonBridge.Gaze.Editor
             go.AddComponent<UdpGazeProvider>();
             go.AddComponent<GazeDebugCursor>();
 
-            GameObjectUtility.SetParentAndAlign(go, command.context as GameObject);
-            Undo.RegisterCreatedObjectUndo(go, "Create Talon Gaze Rig");
-            Selection.activeGameObject = go;
+            Place(go, command, "Create Talon Gaze Rig");
         }
 
         [MenuItem("GameObject/Talon Gaze Bridge/Mouse Gaze Rig", false, 11)]
@@ -26,9 +24,7 @@ namespace TalonBridge.Gaze.Editor
             go.AddComponent<MouseGazeProvider>();
             go.AddComponent<GazeDebugCursor>();
 
-            GameObjectUtility.SetParentAndAlign(go, command.context as GameObject);
-            Undo.RegisterCreatedObjectUndo(go, "Create Mouse Gaze Rig");
-            Selection.activeGameObject = go;
+            Place(go, command, "Create Mouse Gaze Rig");
         }
 
         [MenuItem("GameObject/Talon Gaze Bridge/Gaze Pointer", false, 12)]
@@ -38,9 +34,7 @@ namespace TalonBridge.Gaze.Editor
             go.AddComponent<GazeUIInteractor>();
             go.AddComponent<GazePointer>();
 
-            GameObjectUtility.SetParentAndAlign(go, command.context as GameObject);
-            Undo.RegisterCreatedObjectUndo(go, "Create Gaze Pointer");
-            Selection.activeGameObject = go;
+            Place(go, command, "Create Gaze Pointer");
         }
 
         [MenuItem("GameObject/Talon Gaze Bridge/Gaze World Pointer", false, 13)]
@@ -49,8 +43,13 @@ namespace TalonBridge.Gaze.Editor
             var go = new GameObject("Gaze World Pointer");
             go.AddComponent<GazeWorldPointer>();
 
+            Place(go, command, "Create Gaze World Pointer");
+        }
+
+        private static void Place(GameObject go, MenuCommand command, string undoName)
+        {
             GameObjectUtility.SetParentAndAlign(go, command.context as GameObject);
-            Undo.RegisterCreatedObjectUndo(go, "Create Gaze World Pointer");
+            Undo.RegisterCreatedObjectUndo(go, undoName);
             Selection.activeGameObject = go;
         }
     }

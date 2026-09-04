@@ -146,8 +146,15 @@ sight cannot be told apart.
 
 | Component | Use |
 | --- | --- |
-| `GazeDebugCursor` | IMGUI crosshair and text readout. No scene setup; for diagnostics. |
+| `GazeDebugCursor` | IMGUI crosshair at the gaze position. No scene setup; for diagnostics. |
 | `GazeCanvasCursor` | Moves a UI element to the gaze position, so the cursor can be styled and sorted like any other UI. |
 
-`GazeDebugCursor` optionally reports the current gaze target and the 3D position
-when a `GazePointer` or `GazeWorldPointer` is assigned to it.
+Both only show where gaze is. Coordinates, validity, targets and diagnostics
+live in the Talon Gaze Monitor.
+
+## Talon Gaze Monitor
+
+`Window ▸ Talon Gaze Monitor` is a live monitor showing validity, coordinates, the current target and its dwell progress, the 3D position and hit, and the socket status, packet rate, latency, counters and resolved surface rect. 
+
+`GazeInteractable` also has a live dwell readout in its own inspector, and
+warns when an element has nothing wired to it or the scene has no `GazePointer`.

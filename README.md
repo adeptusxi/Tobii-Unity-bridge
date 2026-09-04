@@ -173,8 +173,9 @@ Current contents:
 | `GazeDwellTracker` | Per-target dwell timing, cooldown and activation |
 | `IGazeFeedback`, `GazeTintFeedback` | Presentation, kept separate from detection |
 | `GazeWorldPointer` | Estimates the 3D gaze position by raycasting from the camera |
-| `GazeDebugCursor` | IMGUI marker and coordinate readout |
+| `GazeDebugCursor` | IMGUI marker at the gaze position |
 | `GazeCanvasCursor` | Moves a UI element to the gaze position |
+| `GazeMonitorWindow` | Editor window: live gaze, target and transport readout |
 
 ### Receiving gaze in Unity
 
@@ -230,3 +231,10 @@ Settings, events and the full component list:
 
 `GameObject ▸ Talon Gaze Bridge ▸ Gaze World Pointer` creates a
 `GazeWorldPointer`,  which reports `GazePositionWorld`, `HasWorldHit` and the collider it landed on.
+
+### Talon Gaze Monitor
+
+`Window ▸ Talon Gaze Monitor` is a live monitor: gaze validity and
+coordinates, the current target and its dwell progress, the 3D position, and
+the packet rate, latency and socket status.
+
