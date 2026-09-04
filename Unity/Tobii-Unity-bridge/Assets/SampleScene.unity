@@ -119,6 +119,79 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &68816729
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 68816732}
+  - component: {fileID: 68816731}
+  - component: {fileID: 68816730}
+  m_Layer: 0
+  m_Name: Gaze Rig (Talon)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &68816730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 68816729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd70a07538044eb58039a43e916e93a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TalonBridge.Gaze::TalonBridge.Gaze.GazeDebugCursor
+  provider: {fileID: 0}
+  showCursor: 1
+  showCoordinates: 1
+  showWhenInvalid: 1
+  size: 28
+  thickness: 2
+  validColor: {r: 0.2, g: 1, b: 0.4, a: 0.9}
+  invalidColor: {r: 1, g: 0.35, b: 0.2, a: 0.6}
+--- !u!114 &68816731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 68816729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94d29d8b5de634263b1a27691198804b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TalonBridge.Gaze::TalonBridge.Gaze.Udp.UdpGazeProvider
+  priority: 0
+  validityTimeout: 0.1
+  port: 5005
+  retryInterval: 2
+  mapper:
+    source: 3
+    requireInsideSurface: 1
+  debugLogging: 0
+--- !u!4 &68816732
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 68816729}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &203931948
 GameObject:
   m_ObjectHideFlags: 0
@@ -355,7 +428,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &898846153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -416,3 +489,4 @@ SceneRoots:
   - {fileID: 897368817}
   - {fileID: 203931951}
   - {fileID: 898846155}
+  - {fileID: 68816732}

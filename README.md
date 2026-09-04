@@ -163,8 +163,44 @@ Current contents:
 | `IGazeProvider`, `GazeSample`, `GazeService` | Gaze access layer |
 | `GazeProviderBase` | Registration, last-valid-position retention, validity timeout |
 | `GazeCoordinates` | Normalized ↔ Unity screen pixel conversion |
+| `UdpGazeProvider` | Receives the Talon stream on a background thread |
+| `GazePacketParser` | Allocation-free decoder for the wire format |
+| `GazeCoordinateMapper` | Chooses window-, screen- or manual-rect-relative coordinates |
+| `GazeDiagnostics` | Packet counters, rate, latency, socket status |
 | `GazeDebugCursor` | IMGUI marker and coordinate readout |
 
-The UDP receiver that consumes the Talon stream is Stage 3, followed by dwell
-and region UI activation, the 3D gaze estimator and the settings/diagnostics
-editor window.
+### Receiving gaze in Unity
+
+`GameObject ▸ Talon Gaze Bridge ▸ Talon Gaze Rig` creates a `UdpGazeProvider`
+and a `GazeDebugCursor`. With Talon running, enter play mode and the crosshair
+follows your gaze.
+
+The receiver binds `127.0.0.1` on the configured port, so it never listens on an
+external interface. Only one process can hold the port: stop
+`tools/gaze_monitor.py` before entering play mode.
+
+**Coordinate Source** on the provider selects which coordinates from the packet
+to use:
+
+| Source | Behaviour |
+| --- | --- |
+| `Auto` | The Game view's rect in the editor; window-relative in a player, else screen-relative |
+| `Window` | Window-relative only; gaze is dropped when no window matched |
+| `Screen` | Screen-relative, for a build filling the main screen |
+| `GameView` | Screen-relative remapped into the editor's Game view rect |
+
+Talon reports the whole Unity editor window, not the docked Game view, so
+window-relative gaze is only exact for a standalone player or a maximized Game
+view. `Auto` therefore uses the Game view's rendered rect whenever it runs in
+the editor, reading it from the editor itself so it follows the view as it is
+docked, resized, zoomed or letterboxed, and uses the packet's window- or
+screen-relative coordinates in a player. The same scene works in both without
+changing the setting.
+
+`GameView` requests that mapping explicitly and behaves identically; `Window`
+and `Screen` opt out of it.
+
+The socket is opened when the component is enabled and closed when it is
+disabled or the application quits. If the port is unavailable or Talon is not
+running, the receiver retries on `Retry Interval` and gaze simply reports
+invalid; a restarted Talon is picked up without restarting Unity.

@@ -283,8 +283,11 @@ class Sender:
             "ok": 1 if ok else 0,
             "eyes": eyes,
         }
+        # Coordinates are omitted for invalid samples: the tracker still
+        # reports a combined gaze point while no eye is tracked, and it is not
+        # a position anything should act on.
         sx = sy = None
-        if point is not None:
+        if ok and point is not None:
             sx, sy = point
             msg["sx"] = round(sx, 5)
             msg["sy"] = round(sy, 5)

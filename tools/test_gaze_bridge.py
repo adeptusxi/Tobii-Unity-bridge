@@ -183,6 +183,11 @@ def main() -> int:
     m = packets["no_eyes"] = recv()
     assert m["ok"] == 0 and m["eyes"] == 0 and "sx" not in m, m
 
+    # A gaze point with no tracked eyes is invalid and carries no coordinates.
+    cb(Frame(Point(0.0, 0.0), Eye(None, tracked=False), Eye(None, tracked=False)))
+    m = packets["untracked_with_point"] = recv()
+    assert m["ok"] == 0 and m["eyes"] == 0 and "sx" not in m, m
+
     # NaN and out-of-range coordinates are rejected.
     cb(Frame(Point(float("nan"), 0.5), Eye(Point(1.5, 0.5)),
              Eye(None, tracked=False)))
