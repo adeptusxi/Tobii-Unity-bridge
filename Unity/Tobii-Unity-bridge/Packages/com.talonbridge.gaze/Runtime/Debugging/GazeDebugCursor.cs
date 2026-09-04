@@ -21,12 +21,17 @@ namespace TalonBridge.Gaze
 
         [Tooltip("Show the coordinate readout next to the cursor.")]
         [SerializeField]
-        private bool showCoordinates = true;
+        private bool showCoordinates = false;
 
         [Tooltip("Optional. When set, the readout also names the gaze target " +
                  "and its dwell progress.")]
         [SerializeField]
         private GazePointer pointer = null;
+
+        [Tooltip("Optional. When set, the readout also shows the estimated 3D " +
+                 "gaze position.")]
+        [SerializeField]
+        private GazeWorldPointer worldPointer = null;
 
         [Tooltip("Keep drawing the marker at the last valid position after " +
                  "tracking is lost, in the invalid colour.")]
@@ -144,6 +149,22 @@ namespace TalonBridge.Gaze
                 text += target != null
                     ? $"\ntarget {target.name} {pointer.PrimaryDwellProgress:P0}"
                     : "\ntarget none";
+            }
+
+            if (worldPointer != null)
+            {
+                if (worldPointer.HasWorldPosition)
+                {
+                    Vector3 world = worldPointer.GazePositionWorld;
+                    text += $"\nworld  {world.x:F2}, {world.y:F2}, {world.z:F2}";
+                    text += worldPointer.HasWorldHit
+                        ? $"\nhit    {worldPointer.HitCollider.name}"
+                        : "\nhit    none (fallback plane)";
+                }
+                else
+                {
+                    text += "\nworld  none";
+                }
             }
 
             labelStyle.normal.textColor = color;

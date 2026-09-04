@@ -172,7 +172,9 @@ Current contents:
 | `GazeUIInteractor` | Hit-tests gaze against uGUI through the EventSystem |
 | `GazeDwellTracker` | Per-target dwell timing, cooldown and activation |
 | `IGazeFeedback`, `GazeTintFeedback` | Presentation, kept separate from detection |
+| `GazeWorldPointer` | Estimates the 3D gaze position by raycasting from the camera |
 | `GazeDebugCursor` | IMGUI marker and coordinate readout |
+| `GazeCanvasCursor` | Moves a UI element to the gaze position |
 
 ### Receiving gaze in Unity
 
@@ -210,7 +212,7 @@ disabled or the application quits. If the port is unavailable or Talon is not
 running, the receiver retries on `Retry Interval` and gaze simply reports
 invalid; a restarted Talon is picked up without restarting Unity.
 
-### UI interaction
+### 2D (UI) Interaction
 
 `GameObject ▸ Talon Gaze Bridge ▸ Gaze Pointer` creates a `GazePointer` and a
 `GazeUIInteractor`. The scene also needs an `EventSystem`; this project is
@@ -223,3 +225,8 @@ Gaze does not drive Unity's EventSystem pointer; mouse works as it usually does.
 
 Settings, events and the full component list:
 `Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/README.md`.
+
+### 3D Interaction
+
+`GameObject ▸ Talon Gaze Bridge ▸ Gaze World Pointer` creates a
+`GazeWorldPointer`,  which reports `GazePositionWorld`, `HasWorldHit` and the collider it landed on.

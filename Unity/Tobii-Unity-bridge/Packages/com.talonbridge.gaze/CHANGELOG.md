@@ -26,3 +26,10 @@
 - `IGazeFeedback` for visual feedback on gazed-at objects. Example implementation in `GazeTintFeedback`
 - `GazeDebugCursor` IMGUI marker and coordinate readout, optionally naming the
   current gaze target and its dwell progress.
+- `GazeWorldPointer` estimating the 3D gaze position by raycasting from the
+  camera, with layer mask, max distance and a fallback plane. 
+- `GazeCanvasCursor`, a uGUI cursor for when the gaze marker is part of the
+  game's presentation. 
+- Samples: UI Interaction Feedback (`RadialFillGazeFeedback`,
+  `ScaleGazeFeedback`, `OutlineGazeFeedback`) and 3D Interaction (`GazeWorldMarker`).
+

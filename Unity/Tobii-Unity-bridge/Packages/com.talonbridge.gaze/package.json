@@ -5,7 +5,8 @@
   "description": "Gaze input for Unity on macOS, sourced from a Tobii eye tracker through Talon over localhost UDP. Provides a gaze provider abstraction and debug tooling.",
   "unity": "6000.0",
   "dependencies": {
-    "com.unity.ugui": "2.0.0"
+    "com.unity.ugui": "2.0.0",
+    "com.unity.modules.physics": "1.0.0"
   },
   "keywords": [
     "gaze",
@@ -14,6 +15,18 @@
     "talon",
     "accessibility",
     "input"
+  ],
+  "samples": [
+    {
+      "displayName": "UI Interaction Feedback",
+      "description": "Interchangeable dwell feedback components: radial fill, scale and outline.",
+      "path": "Samples~/UIInteraction"
+    },
+    {
+      "displayName": "3D Interaction",
+      "description": "Marker showing the estimated 3D gaze position from GazeWorldPointer.",
+      "path": "Samples~/World3D"
+    }
   ],
   "author": {
     "name": "Xiao"

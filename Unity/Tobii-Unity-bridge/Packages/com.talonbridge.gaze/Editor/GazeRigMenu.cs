@@ -42,5 +42,16 @@ namespace TalonBridge.Gaze.Editor
             Undo.RegisterCreatedObjectUndo(go, "Create Gaze Pointer");
             Selection.activeGameObject = go;
         }
+
+        [MenuItem("GameObject/Talon Gaze Bridge/Gaze World Pointer", false, 13)]
+        private static void CreateWorldPointer(MenuCommand command)
+        {
+            var go = new GameObject("Gaze World Pointer");
+            go.AddComponent<GazeWorldPointer>();
+
+            GameObjectUtility.SetParentAndAlign(go, command.context as GameObject);
+            Undo.RegisterCreatedObjectUndo(go, "Create Gaze World Pointer");
+            Selection.activeGameObject = go;
+        }
     }
 }

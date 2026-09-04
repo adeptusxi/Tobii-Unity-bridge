@@ -10,7 +10,7 @@ bridge or anything else implementing the interface.
 
 | Assembly | Contents |
 | --- | --- |
-| `TalonBridge.Gaze` | Runtime: samples, coordinates, provider base, service, providers, interaction, debug cursor |
+| `TalonBridge.Gaze` | Runtime: samples, coordinates, provider base, service, providers, interaction, world gaze, debug cursors |
 | `TalonBridge.Gaze.InputSystem` | Optional. Pointer position via com.unity.inputsystem; excluded when the package is absent |
 | `TalonBridge.Gaze.Editor` | Editor tooling |
 
@@ -119,3 +119,35 @@ On `GazePointer`:
 
 Dwell progress accumulates only while gaze is valid, so tracking loss mid-dwell
 stops progress.
+
+## 3D Interaction
+
+`GazeWorldPointer` casts a ray from the camera through the gaze point and
+reports where it lands.
+
+| Member | Meaning |
+| --- | --- |
+| `GazePositionWorld` | World position under the gaze |
+| `HasWorldHit` | A collider was hit |
+| `HasWorldPosition` | A usable position exists, from a hit or the fallback plane |
+| `HitCollider`, `HitNormal`, `HitDistance` | Details of the hit |
+| `HitColliderChanged` | Raised when the object under the gaze changes |
+
+Settings: `Source Camera` (empty uses `Camera.main`), `Layer Mask`,
+`Max Distance`, `Trigger Interaction`, and a fallback point `Fallback Distance`
+along the ray, used when it hits nothing. Distances are measured from the
+camera's near plane, where `ScreenPointToRay` starts.
+
+This is an approximation using a raycast from the camera through the gaze
+point. It does not accurately reflect focus; objects along the same line of
+sight cannot be told apart.
+
+## Cursors
+
+| Component | Use |
+| --- | --- |
+| `GazeDebugCursor` | IMGUI crosshair and text readout. No scene setup; for diagnostics. |
+| `GazeCanvasCursor` | Moves a UI element to the gaze position, so the cursor can be styled and sorted like any other UI. |
+
+`GazeDebugCursor` optionally reports the current gaze target and the 3D position
+when a `GazePointer` or `GazeWorldPointer` is assigned to it.

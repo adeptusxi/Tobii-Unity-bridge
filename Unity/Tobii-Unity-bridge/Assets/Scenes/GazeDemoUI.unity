@@ -418,7 +418,7 @@ MonoBehaviour:
   dwellDuration: 0.6
   cooldown: 0.5
   dwellDecayRate: 0
-  regionRadius: 0
+  regionRadius: 100
   activateAllInRadius: 0
 --- !u!114 &631202495
 MonoBehaviour:
@@ -880,6 +880,7 @@ MonoBehaviour:
   showCursor: 1
   showCoordinates: 0
   pointer: {fileID: 631202494}
+  worldPointer: {fileID: 0}
   showWhenInvalid: 1
   size: 28
   thickness: 2
