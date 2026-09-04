@@ -1,0 +1,25 @@
+{
+    "name": "TalonBridge.Gaze.InputSystem",
+    "rootNamespace": "TalonBridge.Gaze.InputSystemSupport",
+    "references": [
+        "TalonBridge.Gaze",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "TALONBRIDGE_INPUT_SYSTEM"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "1.0.0",
+            "define": "TALONBRIDGE_INPUT_SYSTEM"
+        }
+    ],
+    "noEngineReferences": false
+}

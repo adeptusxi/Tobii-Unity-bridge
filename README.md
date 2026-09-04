@@ -14,8 +14,10 @@ All traffic is loopback only; no gaze data leaves the local machine.
 | `talon/gaze_bridge.py` | Talon user script: reads gaze, sends UDP |
 | `tools/gaze_monitor.py` | UDP listener for inspecting the stream |
 | `tools/test_gaze_bridge.py` | Offline self-test, no Talon or tracker required |
-| `Unity/Tobii-Unity-bridge/` | Unity project and the `com.talonbridge.gaze` package |
+| `Unity/Tobii-Unity-bridge/` | Unity project |
+| `Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/` | The `Talon Gaze Bridge` Unity package |
 
+---
 
 ## 1. Talon side
 
@@ -138,4 +140,31 @@ loopback, JSON is not a bottleneck.
 
 ## 4. Unity side
 
-Not implemented yet.
+The Unity package lives at
+`Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/` and is embedded in the
+project.
+
+Game code depends on `IGazeProvider` / `GazeService` rather than on any
+transport:
+
+```csharp
+using TalonBridge.Gaze;
+
+if (GazeService.HasValidGaze)
+{
+    Vector2 screen = GazeService.GazePositionScreen;
+}
+```
+
+Current contents:
+
+| Type | Purpose |
+| --- | --- |
+| `IGazeProvider`, `GazeSample`, `GazeService` | Gaze access layer |
+| `GazeProviderBase` | Registration, last-valid-position retention, validity timeout |
+| `GazeCoordinates` | Normalized ↔ Unity screen pixel conversion |
+| `GazeDebugCursor` | IMGUI marker and coordinate readout |
+
+The UDP receiver that consumes the Talon stream is Stage 3, followed by dwell
+and region UI activation, the 3D gaze estimator and the settings/diagnostics
+editor window.

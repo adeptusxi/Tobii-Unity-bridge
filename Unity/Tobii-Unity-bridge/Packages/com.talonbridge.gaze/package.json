@@ -1,0 +1,18 @@
+{
+  "name": "com.talonbridge.gaze",
+  "version": "0.1.0",
+  "displayName": "Talon Gaze Bridge",
+  "description": "Gaze input for Unity on macOS, sourced from a Tobii eye tracker through Talon over localhost UDP. Provides a gaze provider abstraction and debug tooling.",
+  "unity": "6000.0",
+  "keywords": [
+    "gaze",
+    "eye tracking",
+    "tobii",
+    "talon",
+    "accessibility",
+    "input"
+  ],
+  "author": {
+    "name": "Xiao"
+  }
+}
