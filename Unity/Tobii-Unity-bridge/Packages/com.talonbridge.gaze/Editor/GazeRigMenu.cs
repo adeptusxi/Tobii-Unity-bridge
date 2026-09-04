@@ -30,5 +30,17 @@ namespace TalonBridge.Gaze.Editor
             Undo.RegisterCreatedObjectUndo(go, "Create Mouse Gaze Rig");
             Selection.activeGameObject = go;
         }
+
+        [MenuItem("GameObject/Talon Gaze Bridge/Gaze Pointer", false, 12)]
+        private static void CreateGazePointer(MenuCommand command)
+        {
+            var go = new GameObject("Gaze Pointer");
+            go.AddComponent<GazeUIInteractor>();
+            go.AddComponent<GazePointer>();
+
+            GameObjectUtility.SetParentAndAlign(go, command.context as GameObject);
+            Undo.RegisterCreatedObjectUndo(go, "Create Gaze Pointer");
+            Selection.activeGameObject = go;
+        }
     }
 }

@@ -167,6 +167,11 @@ Current contents:
 | `GazePacketParser` | Allocation-free decoder for the wire format |
 | `GazeCoordinateMapper` | Chooses window-, screen- or manual-rect-relative coordinates |
 | `GazeDiagnostics` | Packet counters, rate, latency, socket status |
+| `GazePointer` | Resolves gaze targets each frame and drives dwell |
+| `GazeInteractable` | Opts a UI element into gaze, with dwell and activation events |
+| `GazeUIInteractor` | Hit-tests gaze against uGUI through the EventSystem |
+| `GazeDwellTracker` | Per-target dwell timing, cooldown and activation |
+| `IGazeFeedback`, `GazeTintFeedback` | Presentation, kept separate from detection |
 | `GazeDebugCursor` | IMGUI marker and coordinate readout |
 
 ### Receiving gaze in Unity
@@ -204,3 +209,17 @@ The socket is opened when the component is enabled and closed when it is
 disabled or the application quits. If the port is unavailable or Talon is not
 running, the receiver retries on `Retry Interval` and gaze simply reports
 invalid; a restarted Talon is picked up without restarting Unity.
+
+### UI interaction
+
+`GameObject ▸ Talon Gaze Bridge ▸ Gaze Pointer` creates a `GazePointer` and a
+`GazeUIInteractor`. The scene also needs an `EventSystem`; this project is
+configured for the Input System package, so its input module must be
+`InputSystemUIInputModule`, not `StandaloneInputModule`.
+
+A UI element takes part by having a `GazeInteractable`. 
+
+Gaze does not drive Unity's EventSystem pointer; mouse works as it usually does.
+
+Settings, events and the full component list:
+`Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/README.md`.

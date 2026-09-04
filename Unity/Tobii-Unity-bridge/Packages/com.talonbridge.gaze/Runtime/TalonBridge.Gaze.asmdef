@@ -1,7 +1,9 @@
 {
     "name": "TalonBridge.Gaze",
     "rootNamespace": "TalonBridge.Gaze",
-    "references": [],
+    "references": [
+        "UnityEngine.UI"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

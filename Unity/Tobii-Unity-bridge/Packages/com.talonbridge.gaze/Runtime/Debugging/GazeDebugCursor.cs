@@ -23,6 +23,11 @@ namespace TalonBridge.Gaze
         [SerializeField]
         private bool showCoordinates = true;
 
+        [Tooltip("Optional. When set, the readout also names the gaze target " +
+                 "and its dwell progress.")]
+        [SerializeField]
+        private GazePointer pointer = null;
+
         [Tooltip("Keep drawing the marker at the last valid position after " +
                  "tracking is lost, in the invalid colour.")]
         [SerializeField]
@@ -131,6 +136,14 @@ namespace TalonBridge.Gaze
             if (!string.IsNullOrEmpty(PointerInput.Status))
             {
                 text += $"\n{PointerInput.Status}";
+            }
+
+            if (pointer != null)
+            {
+                GazeInteractable target = pointer.PrimaryTarget;
+                text += target != null
+                    ? $"\ntarget {target.name} {pointer.PrimaryDwellProgress:P0}"
+                    : "\ntarget none";
             }
 
             labelStyle.normal.textColor = color;

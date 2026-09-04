@@ -10,7 +10,7 @@ bridge or anything else implementing the interface.
 
 | Assembly | Contents |
 | --- | --- |
-| `TalonBridge.Gaze` | Runtime: samples, coordinates, provider base, service, providers, debug cursor |
+| `TalonBridge.Gaze` | Runtime: samples, coordinates, provider base, service, providers, interaction, debug cursor |
 | `TalonBridge.Gaze.InputSystem` | Optional. Pointer position via com.unity.inputsystem; excluded when the package is absent |
 | `TalonBridge.Gaze.Editor` | Editor tooling |
 
@@ -76,3 +76,46 @@ own Game view geometry, so it tracks docking, resizing, zoom and letterboxing.
 
 `Diagnostics` exposes packets received, parse errors, invalid packets, packet
 rate, time since the last packet, transport latency and the last socket error.
+
+## Interaction
+
+| Type | Purpose |
+| --- | --- |
+| `GazePointer` | Reads gaze, resolves targets, drives dwell. The component you add. |
+| `GazeUIInteractor` | Hit-tests gaze against uGUI. |
+| `GazeInteractable` | Opts a UI element in, and raises its gaze events. |
+| `GazeDwellTracker` | Dwell timing and activation, owned by the pointer. |
+| `IGazeFeedback` | Presentation hook. `GazeTintFeedback` is a minimal example. |
+| `IGazeHitSource` | The hit test behind the pointer, so it need not be uGUI. |
+
+`GameObject ▸ Talon Gaze Bridge ▸ Gaze Pointer` creates a ready pointer. The
+scene also needs an `EventSystem`.
+
+A UI element takes part by having a `GazeInteractable`; everything else is
+untouched.
+
+```csharp
+interactable.Activated.AddListener(() => Fire());
+interactable.DwellProgressed.AddListener(p => bar.fillAmount = p);
+```
+
+Events: `GazeEntered`, `GazeExited`, `DwellProgressed` (0 to 1) and `Activated`,
+all also exposed in the inspector.
+
+### Settings
+
+On `GazePointer`:
+
+| Setting | Effect |
+| --- | --- |
+| `Dwell Duration` | Gaze time needed to activate a target. |
+| `Cooldown` | Time before the same target may fire again. |
+| `Dwell Decay Rate` | Progress shed per second off-target. 0 discards it at once; a small value forgives gaze jitter at a target's edge. |
+| `Region Radius` | Search radius around the gaze point, in pixels. 0 uses the point alone. |
+| `Activate All In Radius` | Off: the gaze point wins and the radius is only a fallback. On: everything in the radius dwells and activates together. |
+
+`GazeInteractable` can override the duration and cooldown per element, and
+`Repeat While Held` makes gaze held on a target fire repeatedly.
+
+Dwell progress accumulates only while gaze is valid, so tracking loss mid-dwell
+stops progress.
