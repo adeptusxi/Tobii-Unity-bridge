@@ -1231,6 +1231,118 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1855849457
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1855849461}
+  - component: {fileID: 1855849460}
+  - component: {fileID: 1855849459}
+  - component: {fileID: 1855849458}
+  m_Layer: 0
+  m_Name: Gaze Spectator View
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1855849458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1855849457}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a0021e65262470cba0de0cb5205ff8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TalonBridge.Gaze::TalonBridge.Gaze.GazeSpectatorView
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  provider: {fileID: 1122204291}
+  showRawGaze: 0
+  visible: 1
+  hideWhenInvalid: 1
+  cursorColor: {r: 1, g: 1, b: 1, a: 1}
+  showDot: 1
+  dotRadius: 6
+  showCross: 0
+  crossSize: 14
+  showRadiusRing: 0
+  ringRadius: 60
+  pointer: {fileID: 0}
+  lineThickness: 2
+  showOutline: 0
+  outlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+  outlineWidth: 1.5
+  showTrail: 1
+  trailColor: {r: 1, g: 1, b: 1, a: 0.6}
+  maxSegments: 64
+  maxAge: 0
+  minSpacing: 4
+  trailWidth: 3
+  fadeTail: 1
+--- !u!222 &1855849459
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1855849457}
+  m_CullTransparentMesh: 1
+--- !u!223 &1855849460
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1855849457}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 0
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 32000
+  m_TargetDisplay: 0
+--- !u!224 &1855849461
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1855849457}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
 --- !u!1 &2009852819
 GameObject:
   m_ObjectHideFlags: 0
@@ -1519,4 +1631,5 @@ SceneRoots:
   - {fileID: 2009852820}
   - {fileID: 1002355523}
   - {fileID: 1838730984}
+  - {fileID: 1855849461}
   - {fileID: 995097850}

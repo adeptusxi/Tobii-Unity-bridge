@@ -55,6 +55,22 @@ namespace TalonBridge.Gaze.Editor
             Place(go, command, "Create Gaze Shader Globals");
         }
 
+        [MenuItem("GameObject/Talon Gaze Bridge/Gaze Spectator View", false, 15)]
+        private static void CreateSpectatorView(MenuCommand command)
+        {
+            var go = new GameObject("Gaze Spectator View", typeof(RectTransform));
+
+            // Its own canvas, above everything else. No GraphicRaycaster: the
+            // overlay is never a hit target.
+            var canvas = go.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 32000;
+
+            go.AddComponent<GazeSpectatorView>();
+
+            Place(go, command, "Create Gaze Spectator View");
+        }
+
         private static void Place(GameObject go, MenuCommand command, string undoName)
         {
             GameObjectUtility.SetParentAndAlign(go, command.context as GameObject);
