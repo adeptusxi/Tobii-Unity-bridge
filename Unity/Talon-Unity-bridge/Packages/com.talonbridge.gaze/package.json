@@ -41,9 +41,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/adeptusxi/Tobii-Unity-bridge.git"
+    "url": "https://github.com/adeptusxi/Talon-Unity-bridge.git"
   },
-  "documentationUrl": "https://github.com/adeptusxi/Tobii-Unity-bridge/blob/main/Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/README.md",
-  "changelogUrl": "https://github.com/adeptusxi/Tobii-Unity-bridge/blob/main/Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/CHANGELOG.md",
-  "licensesUrl": "https://github.com/adeptusxi/Tobii-Unity-bridge/blob/main/LICENSE"
+  "documentationUrl": "https://github.com/adeptusxi/Talon-Unity-bridge/blob/main/Unity/Talon-Unity-bridge/Packages/com.talonbridge.gaze/README.md",
+  "changelogUrl": "https://github.com/adeptusxi/Talon-Unity-bridge/blob/main/Unity/Talon-Unity-bridge/Packages/com.talonbridge.gaze/CHANGELOG.md",
+  "licensesUrl": "https://github.com/adeptusxi/Talon-Unity-bridge/blob/main/LICENSE"
 }

@@ -7,7 +7,7 @@
 set -eu
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-PKG="$ROOT/Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze"
+PKG="$ROOT/Unity/Talon-Unity-bridge/Packages/com.talonbridge.gaze"
 OUT="$ROOT/dist"
 
 NAME="$(sed -n 's/^ *"name": *"\(.*\)",*$/\1/p' "$PKG/package.json" | head -n 1)"

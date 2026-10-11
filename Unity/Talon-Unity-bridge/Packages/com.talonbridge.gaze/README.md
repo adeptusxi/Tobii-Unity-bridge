@@ -15,7 +15,7 @@ else depends on a render pipeline.
 In Package Manager, **Add package from git URL**:
 
 ```text
-https://github.com/adeptusxi/Tobii-Unity-bridge.git?path=Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze
+https://github.com/adeptusxi/Talon-Unity-bridge.git?path=Unity/Talon-Unity-bridge/Packages/com.talonbridge.gaze
 ```
 
 The `?path=` suffix is required: the package is not at the repository root.
@@ -24,7 +24,7 @@ With a local clone, **Add package from disk** and pick this folder's
 `tools/pack_package.sh` installs with **Add package from tarball**.
 
 The Talon side is set up separately. See the
-[repository README](https://github.com/adeptusxi/Tobii-Unity-bridge#quick-start).
+[repository README](https://github.com/adeptusxi/Talon-Unity-bridge#quick-start).
 
 ## Quick start
 

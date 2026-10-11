@@ -1,6 +1,6 @@
 # Talon → Unity bridge
 
-Unity package and Python UDP bridge for receiving eye tracking data from Talon and making it available to Unity applications. Developed to send Tobii eye tracker data to Unity games on macOS, which is not currently supported by the Tobii Unity SDK. 
+Unity package and Python UDP bridge for receiving eye tracking data from [Talon](https://talonvoice.com/) and making it available to Unity applications. Developed to send Tobii eye tracker data to Unity games on macOS, which is not currently supported by the Tobii Unity SDK. 
 
 This is an independent project and is not affiliated with, endorsed by, or officially supported by Tobii or Talon. 
 
@@ -21,7 +21,7 @@ tools/
   gaze_monitor.py               UDP listener for inspecting the stream
   test_gaze_bridge.py           Offline self-test, no Talon or tracker required
   pack_package.sh               Builds the package as a tarball
-Unity/Tobii-Unity-bridge/       Demo Unity project (URP)
+Unity/Talon-Unity-bridge/       Demo Unity project (URP)
   Assets/Scenes/
     GazeDemoUI.unity            Dwell buttons, UI shader, spectator view
     GazeDemo3D.unity            3D gaze, world shader, fullscreen shader
@@ -79,12 +79,12 @@ play mode in Unity.
 In Package Manager, **Add package from git URL**:
 
 ```text
-https://github.com/adeptusxi/Tobii-Unity-bridge.git?path=Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze
+https://github.com/adeptusxi/Talon-Unity-bridge.git?path=Unity/Talon-Unity-bridge/Packages/com.talonbridge.gaze
 ```
 
 The `?path=` suffix is required because the package is not at the repository
 root. With a local clone, **Add package from disk** and pick
-`Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/package.json` instead.
+`Unity/Talon-Unity-bridge/Packages/com.talonbridge.gaze/package.json` instead.
 
 To get the package in a single file, build a tarball and install it
 with **Add package from tarball**:
@@ -148,7 +148,7 @@ When a mouse rig and a Talon rig are both in a scene, the one with the higher
 ## Features
 
 Settings and API for each are in the
-[package README](Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/README.md).
+[package README](Unity/Talon-Unity-bridge/Packages/com.talonbridge.gaze/README.md).
 
 - **Dwell activation.** A `GazeInteractable` activates after gaze rests on it
   for a configurable duration, with a cooldown before it can fire again.
@@ -273,7 +273,7 @@ loopback, JSON is not a bottleneck.
 `tools/gaze_monitor.py` shows what Talon is sending, and
 `Window ▸ Talon Gaze Monitor` in Unity shows what was received. The package
 README has a
-[symptom table](Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/README.md#troubleshooting).
+[symptom table](Unity/Talon-Unity-bridge/Packages/com.talonbridge.gaze/README.md#troubleshooting).
 A syntax error in the Talon script stops the stream silently; check
 `~/.talon/talon.log`.
 
