@@ -26,6 +26,11 @@
       "displayName": "3D Interaction",
       "description": "Marker showing the estimated 3D gaze position from GazeWorldPointer.",
       "path": "Samples~/World3D"
+    },
+    {
+      "displayName": "Gaze Shaders",
+      "description": "URP shaders that react to gaze: a fullscreen pass, a 3D object material and a UI material.",
+      "path": "Samples~/Shaders"
     }
   ],
   "author": {

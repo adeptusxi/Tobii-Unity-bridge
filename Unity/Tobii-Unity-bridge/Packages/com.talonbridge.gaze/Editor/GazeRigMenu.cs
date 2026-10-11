@@ -46,6 +46,15 @@ namespace TalonBridge.Gaze.Editor
             Place(go, command, "Create Gaze World Pointer");
         }
 
+        [MenuItem("GameObject/Talon Gaze Bridge/Gaze Shader Globals", false, 14)]
+        private static void CreateShaderGlobals(MenuCommand command)
+        {
+            var go = new GameObject("Gaze Shader Globals");
+            go.AddComponent<GazeShaderGlobals>();
+
+            Place(go, command, "Create Gaze Shader Globals");
+        }
+
         private static void Place(GameObject go, MenuCommand command, string undoName)
         {
             GameObjectUtility.SetParentAndAlign(go, command.context as GameObject);
