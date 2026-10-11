@@ -1,35 +1,49 @@
-# macOS Tobii Eye Tracker → Talon → Unity gaze bridge
+# Talon → Unity bridge
 
-Gaze input for Unity on macOS, where the official Tobii Unity SDK does not run.
-This system streams the gaze point from Talon to a local UDP port and consumes it in Unity.
+Unity package and Python UDP bridge for receiving eye tracking data from Talon and making it available to Unity applications. Developed to send Tobii eye tracker data to Unity games on macOS, which is not currently supported by the Tobii Unity SDK. 
 
-```
-Tobii → Talon → [ Talon Python gaze callback → localhost UDP → Unity C# receiver ]
-```
+Talon reads the eye tracker, a Talon script streams the gaze point to a local
+UDP port, and a Unity package receives it and exposes it to game code for interactions with UI, 3D scenes, and shaders. 
 
 All traffic is loopback only; no gaze data leaves the local machine.
 
-| File | Contents |
-| --- | --- |
-| `talon/gaze_bridge.py` | Talon user script: reads gaze, sends UDP |
-| `tools/gaze_monitor.py` | UDP listener for inspecting the stream |
-| `tools/test_gaze_bridge.py` | Offline self-test, no Talon or tracker required |
-| `Unity/Tobii-Unity-bridge/` | Unity project |
-| `Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/` | The `Talon Gaze Bridge` Unity package |
+## Repository layout
 
----
+Note: The Unity project is not at the repository root.
 
-## 1. Talon side
+```
+talon/
+  gaze_bridge.py                Talon user script: reads gaze, sends UDP
+tools/
+  gaze_monitor.py               UDP listener for inspecting the stream
+  test_gaze_bridge.py           Offline self-test, no Talon or tracker required
+Unity/Tobii-Unity-bridge/       Demo Unity project (URP)
+  Assets/Scenes/
+    GazeDemoUI.unity            Dwell buttons, UI shader, spectator view
+    GazeDemo3D.unity            3D gaze, world shader, fullscreen shader
+  Packages/com.talonbridge.gaze/    The Talon Gaze Bridge package
+    Runtime/                    Providers, interaction, filtering, shaders, spectator view
+    Editor/                     Monitor window, inspectors, creation menu
+    ShaderLibrary/              Gaze.hlsl
+    Samples~/                   Importable samples
+    README.md                   Component reference
+```
 
-### Requirements
+To use gaze in your own game you need `talon/gaze_bridge.py` and the Unity package.
 
-- Talon (tested against 0.4.0) on macOS with the Tobii eye tracker attached (tested against model 4C).
-- The tracker calibrated in Talon. This bridge does not replace Tobii/Talon
-  calibration.
+## Requirements
+
+- macOS, single display.
+- Talon (tested against 0.4.0) with a Tobii eye tracker attached (tested
+  against the 4C) and calibrated in Talon. The bridge does not calibrate.
 - Talon's macOS Accessibility permission, which the bridge uses to read the
   Unity window rect.
+- Unity 6000.0 or newer. The gaze shader sample needs URP; everything else is
+  independent of the render pipeline.
 
-### Install
+## Quick start
+
+### 1. Install the Talon script
 
 Symlink the script into the Talon user directory:
 
@@ -37,13 +51,12 @@ Symlink the script into the Talon user directory:
 ln -s "$PWD/talon/gaze_bridge.py" ~/.talon/user/gaze_bridge.py
 ```
 
-The script should start streaming on load and log `[gaze_bridge] streaming gaze to 127.0.0.1:5005`, followed by `[gaze_bridge] attached to tracker …` once a tracker is present. The log is at
+Talon loads it at once and reloads it whenever the file is saved. It logs
+`[gaze_bridge] streaming gaze to 127.0.0.1:5005`, followed by
+`[gaze_bridge] attached to tracker …` once a tracker is present. The log is at
 `~/.talon/talon.log`.
 
-`bridge_start()`, `bridge_stop()` and `bridge_status()` can be called from the
-Talon REPL (`~/.talon/bin/repl`) for manual control and counters.
-
-### Verify the stream
+### 2. Check the stream
 
 ```sh
 python3 tools/gaze_monitor.py          # live status line
@@ -54,8 +67,116 @@ Expect ~60–90 Hz, `OK LR`, and `screen` coordinates that follow your gaze:
 `0,0` is the top-left of the main screen, `1,1` the bottom-right. Covering the
 tracker or looking away drops validity to `---` within ~250 ms.
 
-Only one process can receive on a UDP port, so stop the monitor before running
-the Unity player.
+Only one process can receive on a UDP port. Stop the monitor before entering
+play mode in Unity.
+
+### 3. Add the package to your Unity project
+
+In Package Manager, **Add package from git URL**:
+
+```text
+https://github.com/adeptusxi/Tobii-Unity-bridge.git?path=Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze
+```
+
+The `?path=` suffix is required because the package is not at the repository
+root. With a local clone, **Add package from disk** and pick
+`Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/package.json` instead.
+
+### 4. Set up a scene
+
+Everything is under `GameObject ▸ Talon Gaze Bridge`:
+
+1. **Talon Gaze Rig** creates the UDP receiver and a debug crosshair. Enter
+   play mode with Talon running and the crosshair follows your gaze.
+2. **Gaze Pointer** adds dwell activation for UI. The scene also needs an
+   `EventSystem`.
+3. Add a `GazeInteractable` component to each UI element that should react to
+   gaze. Wire its `Activated` event in the inspector or from code.
+4. **Gaze World Pointer** adds the 3D gaze position, if the game needs one.
+
+### 5. Use gaze from code
+
+Game code reads gaze through `GazeService`, and never touches UDP or Talon:
+
+```csharp
+using TalonBridge.Gaze;
+
+if (GazeService.HasValidGaze)
+{
+    Vector2 screen = GazeService.GazePositionScreen;          // Unity pixels
+    Vector2 normalized = GazeService.GazePositionNormalized;  // 0..1, top-left origin
+}
+```
+
+React to dwell on a UI element:
+
+```csharp
+interactable.Activated.AddListener(() => Fire());
+interactable.DwellProgressed.AddListener(progress => bar.fillAmount = progress);
+```
+
+Read the 3D position:
+
+```csharp
+if (worldPointer.HasWorldPosition)
+{
+    Vector3 lookedAt = worldPointer.GazePositionWorld;
+}
+```
+
+## Working without the Tobii
+
+`GameObject ▸ Talon Gaze Bridge ▸ Mouse Gaze Rig` creates a `MouseGazeProvider`,
+which reports the mouse pointer as gaze. Everything downstream behaves the same,
+so gaze features can be built and debugged with no tracker and no Talon. It can
+add jitter to approximate tracker noise and simulate tracking loss.
+
+When a mouse rig and a Talon rig are both in a scene, the one with the higher
+`Priority` is used.
+
+## Features
+
+Settings and API for each are in the
+[package README](Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/README.md).
+
+- **Dwell activation.** A `GazeInteractable` activates after gaze rests on it
+  for a configurable duration, with a cooldown before it can fire again.
+  Progress resets when gaze leaves and stops while tracking is lost.
+- **Region activation.** `Region Radius` on the pointer lets gaze activate
+  targets near the gaze point, not only under it.
+- **Dwell feedback.** Presentation is separate from detection: implement
+  `IGazeFeedback`, or use the radial fill, scale and outline components in the
+  UI Interaction Feedback sample.
+- **3D gaze.** `GazeWorldPointer` raycasts from the camera through the gaze
+  point and reports the world position and the collider under it.
+- **Smoothing.** Off by default. Add `OneEuroGazeFilter` or
+  `MovingAverageGazeFilter` to the gaze rig.
+- **Gaze shaders.** `GazeShaderGlobals` publishes gaze to all shaders. The Gaze
+  Shaders sample has a fullscreen effect, a 3D material and a UI material.
+- **Spectator view.** `GazeSpectatorView` draws a minimal cursor and trail over
+  the game for streams and recordings.
+- **Debug view.** `GazeDebugCursor` for diagnostics, `GazeCanvasCursor` for a
+  cursor styled as part of the UI.
+- **Talon Gaze Monitor.** `Window ▸ Talon Gaze Monitor` shows live gaze
+  coordinates, the current target, the 3D position and transport statistics.
+
+## Coordinates
+
+- Gaze is normalized to `[0, 1]` with the origin at the **top-left** and y
+  increasing downward, the same convention Talon uses.
+- Unity screen space has its origin at the bottom-left. `GazeCoordinates` does
+  the conversion: `screenX = x * Screen.width`,
+  `screenY = (1 - y) * Screen.height`.
+- **Windowed and fullscreen.** The Talon script sends gaze normalized to the
+  main screen and to the Unity window. `Source`, under `Mapper` on the
+  receiver, picks which to use; the default, `Auto`, handles a windowed player, a
+  fullscreen player and the editor's Game view without changing the setting.
+  Gaze outside the game window is reported as invalid.
+- **Retina displays.** Screen and window rects are macOS logical points, not
+  backing pixels. Gaze reaches Unity already normalized against the window, so
+  display scaling does not affect it.
+
+## Talon script reference
 
 ### Configuration
 
@@ -63,7 +184,7 @@ Constants at the top of `talon/gaze_bridge.py`:
 
 | Setting | Default | Meaning |
 | --- | --- | --- |
-| `HOST` / `PORT` | `127.0.0.1` / `5005` | UDP destination |
+| `HOST` / `PORT` | `127.0.0.1` / `5005` | UDP destination. `PORT` must match `Port` on the Unity receiver |
 | `MAX_RATE_HZ` | `0` | `0` sends every frame; otherwise caps the send rate |
 | `HEARTBEAT_INTERVAL` | `0.25` s | Idle "gaze invalid" packet interval |
 | `WINDOW_MATCH` | `("unity",)` | Substrings matched against a window's app name, bundle id and executable path |
@@ -71,6 +192,16 @@ Constants at the top of `talon/gaze_bridge.py`:
 | `WINDOW_POLL` | `250ms` | Window rect refresh interval |
 | `TRACKER_POLL` | `1s` | Tracker attach/detach poll interval |
 | `DEBUG` | `False` | Verbose logging; never logs per packet |
+
+A window is matched when its app name, bundle id or executable path contains
+one of the `WINDOW_MATCH` substrings. A built game often contains none of
+them: add your game's name. When no window matches, only screen-relative gaze
+is sent.
+
+### Manual control
+
+`bridge_start()`, `bridge_stop()` and `bridge_status()` can be called from the
+Talon REPL (`~/.talon/bin/repl`).
 
 ### Self-test
 
@@ -82,9 +213,7 @@ heartbeat and shutdown.
 python3 tools/test_gaze_bridge.py      # -v dumps the packets
 ```
 
----
-
-## 2. Wire protocol (v1)
+## Wire protocol (v1)
 
 One JSON object per UDP datagram, no framing; the newest packet supersedes any
 earlier one.
@@ -117,124 +246,22 @@ bridge from a stopped one.
 A compact binary encoding is a possible future optimization; at ~90 Hz over
 loopback, JSON is not a bottleneck.
 
-## 3. Coordinate conventions
-
-- Talon reports gaze normalized to `[0, 1]` against the main screen, origin
-  top-left, y increasing downward. This project uses that convention
-  throughout.
-- Screen and window rects are in macOS logical points, not backing pixels;
-  retina scale is not applied. Normalizing against the window rect (`wx`, `wy`)
-  keeps the Unity side independent of display scaling — it only multiplies by
-  `Screen.width` / `Screen.height`.
-- Unity's y axis points up, so the Unity-side conversion is
-  `screenX = wx * Screen.width`, `screenY = (1 - wy) * Screen.height`.
-
-### Not supported
+## Not supported
 
 - **Multiple monitors and secondary displays.** Gaze is normalized against the
   main screen, which is what Talon calibrates against.
-- **Unity Editor Game view alignment.** `win` is the whole editor window rather
-  than the docked Game view, so window-relative coordinates are exact only for
-  a standalone player or a maximized Game view. The Unity side will provide a
-  manual alignment path for editor testing.
+- **Focal depth.** The tracker reports a gaze direction, not a depth. The 3D
+  position is the first surface along the gaze ray.
+- **Packet history and replay.** Only the newest sample is kept.
+- **Gaze-driven OS cursor.** Gaze does not move the system pointer.
+- **Windows and Linux.** Only macOS has been tested.
+- **Blink Handling.** Blinks can cause the gaze point given by Talon to jump away for a moment.
 
-## 4. Unity side
+## Troubleshooting
 
-The Unity package lives at
-`Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/` and is embedded in the
-project.
-
-Game code depends on `IGazeProvider` / `GazeService` rather than on any
-transport:
-
-```csharp
-using TalonBridge.Gaze;
-
-if (GazeService.HasValidGaze)
-{
-    Vector2 screen = GazeService.GazePositionScreen;
-}
-```
-
-Current contents:
-
-| Type | Purpose |
-| --- | --- |
-| `IGazeProvider`, `GazeSample`, `GazeService` | Gaze access layer |
-| `GazeProviderBase` | Registration, last-valid-position retention, validity timeout |
-| `GazeCoordinates` | Normalized ↔ Unity screen pixel conversion |
-| `UdpGazeProvider` | Receives the Talon stream on a background thread |
-| `GazePacketParser` | Allocation-free decoder for the wire format |
-| `GazeCoordinateMapper` | Chooses window-, screen- or manual-rect-relative coordinates |
-| `GazeDiagnostics` | Packet counters, rate, latency, socket status |
-| `GazePointer` | Resolves gaze targets each frame and drives dwell |
-| `GazeInteractable` | Opts a UI element into gaze, with dwell and activation events |
-| `GazeUIInteractor` | Hit-tests gaze against uGUI through the EventSystem |
-| `GazeDwellTracker` | Per-target dwell timing, cooldown and activation |
-| `IGazeFeedback`, `GazeTintFeedback` | Presentation, kept separate from detection |
-| `GazeWorldPointer` | Estimates the 3D gaze position by raycasting from the camera |
-| `GazeDebugCursor` | IMGUI marker at the gaze position |
-| `GazeCanvasCursor` | Moves a UI element to the gaze position |
-| `GazeMonitorWindow` | Editor window: live gaze, target and transport readout |
-
-### Receiving gaze in Unity
-
-`GameObject ▸ Talon Gaze Bridge ▸ Talon Gaze Rig` creates a `UdpGazeProvider`
-and a `GazeDebugCursor`. With Talon running, enter play mode and the crosshair
-follows your gaze.
-
-The receiver binds `127.0.0.1` on the configured port, so it never listens on an
-external interface. Only one process can hold the port: stop
-`tools/gaze_monitor.py` before entering play mode.
-
-**Coordinate Source** on the provider selects which coordinates from the packet
-to use:
-
-| Source | Behaviour |
-| --- | --- |
-| `Auto` | The Game view's rect in the editor; window-relative in a player, else screen-relative |
-| `Window` | Window-relative only; gaze is dropped when no window matched |
-| `Screen` | Screen-relative, for a build filling the main screen |
-| `GameView` | Screen-relative remapped into the editor's Game view rect |
-
-Talon reports the whole Unity editor window, not the docked Game view, so
-window-relative gaze is only exact for a standalone player or a maximized Game
-view. `Auto` therefore uses the Game view's rendered rect whenever it runs in
-the editor, reading it from the editor itself so it follows the view as it is
-docked, resized, zoomed or letterboxed, and uses the packet's window- or
-screen-relative coordinates in a player. The same scene works in both without
-changing the setting.
-
-`GameView` requests that mapping explicitly and behaves identically; `Window`
-and `Screen` opt out of it.
-
-The socket is opened when the component is enabled and closed when it is
-disabled or the application quits. If the port is unavailable or Talon is not
-running, the receiver retries on `Retry Interval` and gaze simply reports
-invalid; a restarted Talon is picked up without restarting Unity.
-
-### 2D (UI) Interaction
-
-`GameObject ▸ Talon Gaze Bridge ▸ Gaze Pointer` creates a `GazePointer` and a
-`GazeUIInteractor`. The scene also needs an `EventSystem`; this project is
-configured for the Input System package, so its input module must be
-`InputSystemUIInputModule`, not `StandaloneInputModule`.
-
-A UI element takes part by having a `GazeInteractable`. 
-
-Gaze does not drive Unity's EventSystem pointer; mouse works as it usually does.
-
-Settings, events and the full component list:
-`Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/README.md`.
-
-### 3D Interaction
-
-`GameObject ▸ Talon Gaze Bridge ▸ Gaze World Pointer` creates a
-`GazeWorldPointer`,  which reports `GazePositionWorld`, `HasWorldHit` and the collider it landed on.
-
-### Talon Gaze Monitor
-
-`Window ▸ Talon Gaze Monitor` is a live monitor: gaze validity and
-coordinates, the current target and its dwell progress, the 3D position, and
-the packet rate, latency and socket status.
-
+`tools/gaze_monitor.py` shows what Talon is sending, and
+`Window ▸ Talon Gaze Monitor` in Unity shows what was received. The package
+README has a
+[symptom table](Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/README.md#troubleshooting).
+A syntax error in the Talon script stops the stream silently; check
+`~/.talon/talon.log`.

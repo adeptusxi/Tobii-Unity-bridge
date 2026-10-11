@@ -37,15 +37,27 @@
   interactables that are wired to nothing.
 - `IGazeFilter` with `OneEuroGazeFilter` and `MovingAverageGazeFilter`, optional
   gaze smoothing that is off unless a filter component is added to the provider.
+  Filter history survives a blink and is reset once gaze has been invalid for
+  longer than `Validity Timeout`.
 - `GazeProviderBase.RawSample`, the newest sample before filtering.
 - `MouseGazeProvider` documented as a supported provider for building gaze
   systems without a tracker.
+- `GazeShaderGlobals`, which publishes gaze as global shader properties, and
+  `ShaderLibrary/Gaze.hlsl` with helpers for reading them.
+- Gaze Shaders sample: URP fullscreen, 3D object and UI shaders that react to
+  gaze.
+- `GazeSpectatorView`, a minimal cursor and trail overlay for recorded
+  gameplay, and `GazeTrail`, the point history behind it.
+- `Gaze Shader Globals` and `Gaze Spectator View` entries in the
+  `GameObject ▸ Talon Gaze Bridge` menu.
 
 ### Fixed
 - `GazePointer`, `GazeWorldPointer` and `GazeCanvasCursor` repeated a component
   or `Camera.main` lookup every frame when the thing they needed was missing.
   Each now caches the result, retries once a second while it is missing, and
   warns once.
+- `GazeWorldPointer` and `GazeCanvasCursor` kept using a main camera that had
+  been destroyed or disabled. They now look `Camera.main` up again.
 - `GazeUIInteractor` looked up each candidate's `Canvas` on every hit test;
   `GazeInteractable` now caches it.
 - `UdpGazeProvider` allocated a string on every `ProviderName` read and on every
