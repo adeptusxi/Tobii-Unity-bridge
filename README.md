@@ -2,10 +2,13 @@
 
 Unity package and Python UDP bridge for receiving eye tracking data from Talon and making it available to Unity applications. Developed to send Tobii eye tracker data to Unity games on macOS, which is not currently supported by the Tobii Unity SDK. 
 
-Talon reads the eye tracker, a Talon script streams the gaze point to a local
-UDP port, and a Unity package receives it and exposes it to game code for interactions with UI, 3D scenes, and shaders. 
+This is an independent project and is not affiliated with, endorsed by, or officially supported by Tobii or Talon. 
 
-All traffic is loopback only; no gaze data leaves the local machine.
+This project was developed with the assistance of Claude Code. 
+
+## Overview 
+Talon reads the eye tracker, a Talon script streams the gaze point to a local
+UDP port, and a Unity package receives it and exposes it to game code for interactions with UI, 3D scenes, and shaders. All traffic is loopback only; no gaze data leaves the local machine.
 
 ## Repository layout
 
@@ -17,6 +20,7 @@ talon/
 tools/
   gaze_monitor.py               UDP listener for inspecting the stream
   test_gaze_bridge.py           Offline self-test, no Talon or tracker required
+  pack_package.sh               Builds the package as a tarball
 Unity/Tobii-Unity-bridge/       Demo Unity project (URP)
   Assets/Scenes/
     GazeDemoUI.unity            Dwell buttons, UI shader, spectator view
@@ -81,6 +85,13 @@ https://github.com/adeptusxi/Tobii-Unity-bridge.git?path=Unity/Tobii-Unity-bridg
 The `?path=` suffix is required because the package is not at the repository
 root. With a local clone, **Add package from disk** and pick
 `Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/package.json` instead.
+
+To get the package in a single file, build a tarball and install it
+with **Add package from tarball**:
+
+```sh
+tools/pack_package.sh      # writes dist/com.talonbridge.gaze-<version>.tgz
+```
 
 ### 4. Set up a scene
 
@@ -265,3 +276,7 @@ README has a
 [symptom table](Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/README.md#troubleshooting).
 A syntax error in the Talon script stops the stream silently; check
 `~/.talon/talon.log`.
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE).

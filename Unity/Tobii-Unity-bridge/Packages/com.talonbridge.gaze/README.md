@@ -20,7 +20,8 @@ https://github.com/adeptusxi/Tobii-Unity-bridge.git?path=Unity/Tobii-Unity-bridg
 
 The `?path=` suffix is required: the package is not at the repository root.
 With a local clone, **Add package from disk** and pick this folder's
-`package.json` instead.
+`package.json` instead. A tarball built with the repository's
+`tools/pack_package.sh` installs with **Add package from tarball**.
 
 The Talon side is set up separately. See the
 [repository README](https://github.com/adeptusxi/Tobii-Unity-bridge#quick-start).

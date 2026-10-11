@@ -6,7 +6,8 @@
   "unity": "6000.0",
   "dependencies": {
     "com.unity.ugui": "2.0.0",
-    "com.unity.modules.physics": "1.0.0"
+    "com.unity.modules.physics": "1.0.0",
+    "com.unity.modules.imgui": "1.0.0"
   },
   "keywords": [
     "gaze",
@@ -34,6 +35,15 @@
     }
   ],
   "author": {
-    "name": "Xiao"
-  }
+    "name": "adeptusxi",
+    "url": "https://github.com/adeptusxi"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adeptusxi/Tobii-Unity-bridge.git"
+  },
+  "documentationUrl": "https://github.com/adeptusxi/Tobii-Unity-bridge/blob/main/Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/README.md",
+  "changelogUrl": "https://github.com/adeptusxi/Tobii-Unity-bridge/blob/main/Unity/Tobii-Unity-bridge/Packages/com.talonbridge.gaze/CHANGELOG.md",
+  "licensesUrl": "https://github.com/adeptusxi/Tobii-Unity-bridge/blob/main/LICENSE"
 }
