@@ -882,7 +882,7 @@ GameObject:
   - component: {fileID: 1002355521}
   - component: {fileID: 1002355524}
   m_Layer: 0
-  m_Name: GazeCursor
+  m_Name: Gaze Cursor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1103,7 +1103,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1122204292}
   - component: {fileID: 1122204291}
-  - component: {fileID: 1122204290}
   - component: {fileID: 1122204293}
   m_Layer: 0
   m_Name: Gaze Rig (Talon)
@@ -1112,25 +1111,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1122204290
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1122204289}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acd70a07538044eb58039a43e916e93a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: TalonBridge.Gaze::TalonBridge.Gaze.GazeDebugCursor
-  provider: {fileID: 0}
-  showCursor: 0
-  showWhenInvalid: 1
-  size: 28
-  thickness: 2
-  validColor: {r: 0.2, g: 1, b: 0.4, a: 0.9}
-  invalidColor: {r: 1, g: 0.35, b: 0.2, a: 0.6}
 --- !u!114 &1122204291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1354,7 +1334,7 @@ GameObject:
   - component: {fileID: 2009852820}
   - component: {fileID: 2009852821}
   m_Layer: 0
-  m_Name: GazePointer
+  m_Name: Gaze Pointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
