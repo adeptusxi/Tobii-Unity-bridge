@@ -39,9 +39,14 @@ namespace TalonBridge.Gaze
         [Min(0f)]
         private float smoothing = 0f;
 
+        private const float CameraLookupInterval = 1f;
+
         private RectTransform rectTransform;
         private RectTransform canvasRect;
         private Canvas canvas;
+        private Camera fallbackCamera;
+        private float nextCameraLookup;
+        private bool canvasResolved;
         private readonly List<Graphic> graphics = new List<Graphic>();
         private Vector2 currentPosition;
         private bool hasPosition;
@@ -60,8 +65,16 @@ namespace TalonBridge.Gaze
         {
             hasPosition = false;
             visible = true;
+            canvasResolved = false;
+            nextCameraLookup = 0f;
             CacheCanvas();
             CacheGraphics();
+        }
+
+        private void OnTransformParentChanged()
+        {
+            canvasResolved = false;
+            CacheCanvas();
         }
 
         /// <summary>
@@ -118,19 +131,13 @@ namespace TalonBridge.Gaze
         /// </summary>
         private Vector3 ToCursorPosition(Vector2 screenPosition)
         {
-            if (canvas == null)
-            {
-                CacheCanvas();
-            }
-
             if (canvas == null || canvas.renderMode == RenderMode.ScreenSpaceOverlay)
             {
                 return screenPosition;
             }
 
-            Camera camera = canvas.worldCamera != null ? canvas.worldCamera : Camera.main;
             if (canvasRect != null && RectTransformUtility.ScreenPointToWorldPointInRectangle(
-                    canvasRect, screenPosition, camera, out Vector3 world))
+                    canvasRect, screenPosition, ResolveCanvasCamera(), out Vector3 world))
             {
                 return world;
             }
@@ -169,14 +176,64 @@ namespace TalonBridge.Gaze
             }
         }
 
+        /// <summary>
+        /// Resolved on enable and on reparenting, so a cursor placed outside a
+        /// Canvas does not walk the hierarchy looking for one every frame.
+        /// </summary>
         private void CacheCanvas()
         {
-            canvas = GetComponentInParent<Canvas>();
-            if (canvas != null)
+            if (canvasResolved)
             {
-                canvas = canvas.rootCanvas;
-                canvasRect = canvas.transform as RectTransform;
+                return;
             }
+
+            canvasResolved = true;
+            canvasRect = null;
+            canvas = GetComponentInParent<Canvas>();
+            if (canvas == null)
+            {
+                Debug.LogWarning(
+                    "GazeCanvasCursor is not under a Canvas. It is placed in " +
+                    "screen pixels, which only suits a Screen Space - Overlay " +
+                    "Canvas.", this);
+                return;
+            }
+
+            canvas = canvas.rootCanvas;
+            canvasRect = canvas.transform as RectTransform;
+        }
+
+        /// <summary>
+        /// The Canvas's own camera, else Camera.main. The fallback is cached
+        /// while it stays usable and looked up again at an interval while there
+        /// is none.
+        /// </summary>
+        private Camera ResolveCanvasCamera()
+        {
+            Camera own = canvas.worldCamera;
+            if (own != null)
+            {
+                return own;
+            }
+
+            if (fallbackCamera != null && fallbackCamera.isActiveAndEnabled)
+            {
+                return fallbackCamera;
+            }
+
+            fallbackCamera = null;
+
+            float now = Time.realtimeSinceStartup;
+            if (now >= nextCameraLookup)
+            {
+                fallbackCamera = Camera.main;
+                if (fallbackCamera == null)
+                {
+                    nextCameraLookup = now + CameraLookupInterval;
+                }
+            }
+
+            return fallbackCamera;
         }
     }
 }

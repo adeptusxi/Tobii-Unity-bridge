@@ -56,6 +56,13 @@ namespace TalonBridge.Gaze
         /// <summary>Position in Unity screen pixels. Main thread only.</summary>
         public Vector2 ScreenPosition => GazeCoordinates.NormalizedToScreen(Normalized);
 
+        /// <summary>Copy of this sample at a different position.</summary>
+        public GazeSample WithNormalized(Vector2 normalized)
+        {
+            return new GazeSample(
+                normalized, IsValid, Eyes, InsideWindow, SourceTimestamp, ReceivedTime);
+        }
+
         public static GazeSample Invalid(double sourceTimestamp, float receivedTime)
         {
             return new GazeSample(

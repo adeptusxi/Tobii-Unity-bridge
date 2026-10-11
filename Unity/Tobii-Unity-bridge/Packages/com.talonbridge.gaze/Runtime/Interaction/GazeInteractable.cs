@@ -51,6 +51,8 @@ namespace TalonBridge.Gaze
 
         private readonly List<IGazeFeedback> feedback = new List<IGazeFeedback>();
         private RectTransform cachedRect;
+        private Canvas cachedCanvas;
+        private bool canvasResolved;
 
         public UnityEvent GazeEntered => onGazeEnter;
 
@@ -106,12 +108,38 @@ namespace TalonBridge.Gaze
             }
         }
 
+        /// <summary>
+        /// Canvas this element is drawn by, or null. Cached: the hit test reads
+        /// it for every candidate every frame.
+        /// </summary>
+        public Canvas Canvas
+        {
+            get
+            {
+                // A destroyed canvas compares equal to null without being null.
+                bool destroyed = !ReferenceEquals(cachedCanvas, null) && cachedCanvas == null;
+                if (!canvasResolved || destroyed)
+                {
+                    canvasResolved = true;
+                    cachedCanvas = GetComponentInParent<Canvas>();
+                }
+
+                return cachedCanvas;
+            }
+        }
+
         /// <summary>True when this element can currently be gazed at.</summary>
         public bool CanInteract => interactable && isActiveAndEnabled;
 
         private void OnEnable()
         {
+            canvasResolved = false;
             RefreshFeedback();
+        }
+
+        private void OnTransformParentChanged()
+        {
+            canvasResolved = false;
         }
 
         private void OnDisable()

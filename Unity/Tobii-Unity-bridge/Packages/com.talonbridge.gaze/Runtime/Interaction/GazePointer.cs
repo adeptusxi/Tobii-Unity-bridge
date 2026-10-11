@@ -55,7 +55,10 @@ namespace TalonBridge.Gaze
         private readonly List<GazeInteractable> hits = new List<GazeInteractable>();
         private readonly GazeDwellTracker tracker = new GazeDwellTracker();
 
+        private const float HitSourceLookupInterval = 1f;
+
         private IGazeHitSource resolvedHitSource;
+        private float nextHitSourceLookup;
         private bool warnedNoHitSource;
 
         /// <summary>Raised when a target completes its dwell.</summary>
@@ -117,6 +120,12 @@ namespace TalonBridge.Gaze
             tracker.Activated -= OnTargetActivated;
         }
 
+        private void OnEnable()
+        {
+            nextHitSourceLookup = 0f;
+            warnedNoHitSource = false;
+        }
+
         private void OnDisable()
         {
             // Don't leave interactables stuck in a gazed-at state.
@@ -153,26 +162,47 @@ namespace TalonBridge.Gaze
             tracker.Tick(hits, valid, Time.unscaledDeltaTime);
         }
 
+        /// <summary>
+        /// The assigned hit source, or one on this GameObject. Looked up again
+        /// when it is destroyed, and at an interval while there is none, rather
+        /// than every frame.
+        /// </summary>
         private IGazeHitSource ResolveHitSource()
         {
+            // A destroyed component compares equal to null without being null.
+            if (resolvedHitSource is UnityEngine.Object component && component == null)
+            {
+                resolvedHitSource = null;
+            }
+
             if (resolvedHitSource != null)
             {
                 return resolvedHitSource;
             }
 
-            resolvedHitSource = hitSource as IGazeHitSource;
+            float now = Time.realtimeSinceStartup;
+            if (now < nextHitSourceLookup)
+            {
+                return null;
+            }
+
+            resolvedHitSource = hitSource != null ? hitSource as IGazeHitSource : null;
             if (resolvedHitSource == null)
             {
                 resolvedHitSource = GetComponent<IGazeHitSource>();
             }
 
-            if (resolvedHitSource == null && !warnedNoHitSource)
+            if (resolvedHitSource == null)
             {
-                warnedNoHitSource = true;
-                Debug.LogWarning(
-                    "GazePointer has no hit source. Add a GazeUIInteractor to " +
-                    "this GameObject, or assign one to Hit Source.",
-                    this);
+                nextHitSourceLookup = now + HitSourceLookupInterval;
+                if (!warnedNoHitSource)
+                {
+                    warnedNoHitSource = true;
+                    Debug.LogWarning(
+                        "GazePointer has no hit source. Add a GazeUIInteractor to " +
+                        "this GameObject, or assign one to Hit Source.",
+                        this);
+                }
             }
 
             return resolvedHitSource;

@@ -45,7 +45,11 @@ namespace TalonBridge.Gaze
         [Min(0.01f)]
         private float fallbackDistance = 10f;
 
+        private const float CameraLookupInterval = 1f;
+
         private Camera resolvedCamera;
+        private float nextCameraLookup;
+        private bool warnedNoCamera;
 
         /// <summary>Raised when the collider under the gaze changes, including to null.</summary>
         public event Action<Collider> HitColliderChanged;
@@ -81,7 +85,7 @@ namespace TalonBridge.Gaze
             set
             {
                 sourceCamera = value;
-                resolvedCamera = value;
+                nextCameraLookup = 0f;
             }
         }
 
@@ -110,6 +114,12 @@ namespace TalonBridge.Gaze
         }
 
         private IGazeProvider Source => provider != null ? provider : GazeService.Active;
+
+        private void OnEnable()
+        {
+            nextCameraLookup = 0f;
+            warnedNoCamera = false;
+        }
 
         private void OnDisable()
         {
@@ -182,11 +192,38 @@ namespace TalonBridge.Gaze
             HitColliderChanged?.Invoke(collider);
         }
 
+        /// <summary>
+        /// Camera.main, cached while it stays usable. Looked up again when the
+        /// cached camera is destroyed or disabled, and at an interval while
+        /// there is none, rather than every frame.
+        /// </summary>
         private Camera ResolveCamera()
         {
+            if (resolvedCamera != null && resolvedCamera.isActiveAndEnabled)
+            {
+                return resolvedCamera;
+            }
+
+            resolvedCamera = null;
+
+            float now = Time.realtimeSinceStartup;
+            if (now < nextCameraLookup)
+            {
+                return null;
+            }
+
+            resolvedCamera = Camera.main;
             if (resolvedCamera == null)
             {
-                resolvedCamera = Camera.main;
+                nextCameraLookup = now + CameraLookupInterval;
+                if (!warnedNoCamera)
+                {
+                    warnedNoCamera = true;
+                    Debug.LogWarning(
+                        "GazeWorldPointer has no camera. Tag one MainCamera, or " +
+                        "assign one to Source Camera.",
+                        this);
+                }
             }
 
             return resolvedCamera;

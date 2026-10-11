@@ -35,4 +35,19 @@
   state, the current target, the 3D position and transport diagnostics.
 - `GazeInteractableInspector` showing live dwell progress and warning about
   interactables that are wired to nothing.
+- `IGazeFilter` with `OneEuroGazeFilter` and `MovingAverageGazeFilter`, optional
+  gaze smoothing that is off unless a filter component is added to the provider.
+- `GazeProviderBase.RawSample`, the newest sample before filtering.
+- `MouseGazeProvider` documented as a supported provider for building gaze
+  systems without a tracker.
+
+### Fixed
+- `GazePointer`, `GazeWorldPointer` and `GazeCanvasCursor` repeated a component
+  or `Camera.main` lookup every frame when the thing they needed was missing.
+  Each now caches the result, retries once a second while it is missing, and
+  warns once.
+- `GazeUIInteractor` looked up each candidate's `Canvas` on every hit test;
+  `GazeInteractable` now caches it.
+- `UdpGazeProvider` allocated a string on every `ProviderName` read and on every
+  malformed datagram.
 

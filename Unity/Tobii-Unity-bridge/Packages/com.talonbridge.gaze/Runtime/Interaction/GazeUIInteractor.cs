@@ -225,7 +225,7 @@ namespace TalonBridge.Gaze
 
             Vector3 worldCentre = rect.TransformPoint(rect.rect.center);
 
-            Canvas canvas = interactable.GetComponentInParent<Canvas>();
+            Canvas canvas = interactable.Canvas;
             Camera camera = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay
                 ? canvas.worldCamera
                 : null;

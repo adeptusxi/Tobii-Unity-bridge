@@ -41,6 +41,9 @@ namespace TalonBridge.Gaze.Udp
 
         private readonly object gate = new object();
         private readonly GazeDiagnostics diagnostics = new GazeDiagnostics();
+        private string lastDecodeError;
+        private string providerName;
+        private int providerNamePort = -1;
         private readonly GazePacketParser parser = new GazePacketParser();
         private readonly byte[] receiveBuffer = new byte[ReceiveBufferSize];
 
@@ -60,7 +63,19 @@ namespace TalonBridge.Gaze.Udp
 
         public GazeCoordinateMapper Mapper => mapper;
 
-        public override string ProviderName => $"Talon UDP :{port}";
+        public override string ProviderName
+        {
+            get
+            {
+                if (providerName == null || providerNamePort != port)
+                {
+                    providerNamePort = port;
+                    providerName = $"Talon UDP :{port}";
+                }
+
+                return providerName;
+            }
+        }
 
         public int Port
         {
@@ -95,6 +110,7 @@ namespace TalonBridge.Gaze.Udp
             }
 
             diagnostics.Reset();
+            lastDecodeError = null;
             diagnostics.Endpoint = $"{IPAddress.Loopback}:{port}";
             rateWindowStartPackets = 0;
             rateWindowStartTime = Time.realtimeSinceStartup;
@@ -170,6 +186,7 @@ namespace TalonBridge.Gaze.Udp
                     socket = current;
                     diagnostics.IsListening = true;
                     diagnostics.LastError = string.Empty;
+                    lastDecodeError = null;
                     Log($"listening on {IPAddress.Loopback}:{port}");
 
                     Receive(current);
@@ -236,7 +253,13 @@ namespace TalonBridge.Gaze.Udp
                 if (!parser.TryParse(receiveBuffer, received, out GazePacket packet))
                 {
                     diagnostics.CountParseError();
-                    diagnostics.LastError = $"decode failed: {parser.LastError}";
+                    // A sender spraying malformed packets would otherwise
+                    // allocate a string per datagram on this thread.
+                    if (lastDecodeError != parser.LastError)
+                    {
+                        lastDecodeError = parser.LastError;
+                        diagnostics.LastError = $"decode failed: {parser.LastError}";
+                    }
                     continue;
                 }
 

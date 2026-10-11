@@ -274,9 +274,9 @@ Transform:
   m_GameObject: {fileID: 417255020}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.31266427, z: -0, w: 0.94986373}
-  m_LocalPosition: {x: 2.4000008, y: -1, z: 44.9}
-  m_LocalScale: {x: 8, y: 20, z: 8}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.29999995, y: -0.64, z: 14.700001}
+  m_LocalScale: {x: 4, y: 10, z: 4}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 995097850}
   m_LocalEulerAnglesHint: {x: 0, y: 36.44, z: 0}
@@ -386,8 +386,8 @@ Transform:
   m_GameObject: {fileID: 572845159}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 17.1, y: -1, z: 29.5}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalPosition: {x: 8, y: -0.64, z: 11}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 995097850}
@@ -652,7 +652,7 @@ GameObject:
   - component: {fileID: 1002355523}
   - component: {fileID: 1002355522}
   - component: {fileID: 1002355521}
-  - component: {fileID: 1002355520}
+  - component: {fileID: 1002355524}
   m_Layer: 0
   m_Name: GazeCursor
   m_TagString: Untagged
@@ -660,23 +660,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1002355520
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1002355519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acced8c6a46d44c929d5b7ee4af0a14a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TalonBridge.Gaze.Samples.GazeWorldMarker
-  pointer: {fileID: 2009852821}
-  marker: {fileID: 1002355523}
-  alignToSurface: 1
-  surfaceOffset: 0.01
-  hideWithoutHit: 0
 --- !u!23 &1002355521
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -734,14 +717,13 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1002355519}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &1002355523
-Transform:
+--- !u!224 &1002355523
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1002355519}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
@@ -749,6 +731,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1002355524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002355519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83a93a1b9ff464acaaee603960ba2f88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TalonBridge.Gaze.Samples.GazeWorldMarker
+  pointer: {fileID: 2009852821}
+  marker: {fileID: 0}
+  alignToSurface: 1
+  surfaceOffset: 0.01
+  hideWithoutHit: 0
 --- !u!1 &1055273908
 GameObject:
   m_ObjectHideFlags: 0
@@ -777,8 +781,8 @@ Transform:
   m_GameObject: {fileID: 1055273908}
   serializedVersion: 2
   m_LocalRotation: {x: 0.04951131, y: -0.12729646, z: 0.101432554, w: 0.9854216}
-  m_LocalPosition: {x: -12.499999, y: -0.99999994, z: 42.7}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalPosition: {x: -8.799999, y: -0.64, z: 12.900002}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 995097850}
@@ -872,6 +876,7 @@ GameObject:
   - component: {fileID: 1122204292}
   - component: {fileID: 1122204291}
   - component: {fileID: 1122204290}
+  - component: {fileID: 1122204293}
   m_Layer: 0
   m_Name: Gaze Rig (Talon)
   m_TagString: Untagged
@@ -893,9 +898,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: TalonBridge.Gaze::TalonBridge.Gaze.GazeDebugCursor
   provider: {fileID: 0}
   showCursor: 0
-  showCoordinates: 0
-  pointer: {fileID: 0}
-  worldPointer: {fileID: 2009852821}
   showWhenInvalid: 1
   size: 28
   thickness: 2
@@ -936,6 +938,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1122204293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1122204289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64b1d377254aa4c369ca9b25f2405979, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TalonBridge.Gaze::TalonBridge.Gaze.OneEuroGazeFilter
+  minCutoff: 1
+  beta: 2
+  derivativeCutoff: 1
 --- !u!1 &2009852819
 GameObject:
   m_ObjectHideFlags: 0
@@ -981,7 +998,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: TalonBridge.Gaze::TalonBridge.Gaze.GazeWorldPointer
   sourceCamera: {fileID: 0}
-  provider: {fileID: 0}
+  provider: {fileID: 1122204291}
   layerMask:
     serializedVersion: 2
     m_Bits: 4294967295
